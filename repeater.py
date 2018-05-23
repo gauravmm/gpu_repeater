@@ -20,22 +20,8 @@ GPU_RESPONSE = {k: (None, None) for k in SERVERS}
 
 app = Flask(__name__)
 @app.route("/")
-def page_index():
-    return app.send_static_file('index.html')
-
-@app.route("/script.js")
-def page_script():
-    return app.send_static_file('script.js')
-
-@app.route("/style.css")
-def page_style():
-    return app.send_static_file('style.css')
-
-
-@app.route("/update")
 def update():
     return jsonify(GPU_RESPONSE)
-
 
 def update(server):
     global GPU_RESPONSE
@@ -44,7 +30,6 @@ def update(server):
     if r.status_code == 200:
         now = datetime.datetime.now()
         GPU_RESPONSE[server] = (r.json(), now)
-
 
 def main():
     assert SERVERS
