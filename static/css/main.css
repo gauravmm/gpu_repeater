@@ -1,4 +1,5 @@
 /*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
+
 /* Based on Initializr Styles by Jonathan Verrecchia - verekia.com/initializr/responsive-template */
 
 html {
@@ -38,14 +39,11 @@ body {
     border-bottom: 10px solid #e44d26;
 }
 
-.footer-container,
-.main aside {
+.footer-container, .main aside {
     border-top: 20px solid #e44d26;
 }
 
-.header-container,
-.footer-container,
-.main aside {
+.header-container, .footer-container, .main aside {
     background: #f16529;
 }
 
@@ -54,7 +52,6 @@ body {
     text-align: center;
     margin-bottom: 10p
 }
-
 
 /* ==============
     MOBILE: Main
@@ -89,11 +86,10 @@ body {
 }
 
 @media only screen and (min-width: 768px) {
-    .header-container,
-    .main aside {
+    .header-container, .main aside {
         box-shadow: 0 3px 3px #aaa;
     }
-
+    /*
     .main article {
         float: left;
         width: 57%;
@@ -102,12 +98,13 @@ body {
     .main aside {
         float: right;
         width: 28%;
-    }
+    }*/
 }
 
 @media only screen and (min-width: 1140px) {
     .wrapper {
-        width: 1026px; /* 1140px - 10% for margins */
+        width: 1026px;
+        /* 1140px - 10% for margins */
         margin: 0 auto;
     }
 }
@@ -132,8 +129,7 @@ body {
     width: 1px;
 }
 
-.visuallyhidden.focusable:active,
-.visuallyhidden.focusable:focus {
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
     clip: auto;
     height: auto;
     margin: 0;
@@ -146,8 +142,7 @@ body {
     visibility: hidden;
 }
 
-.clearfix:before,
-.clearfix:after {
+.clearfix:before, .clearfix:after {
     content: " ";
     display: table;
 }
@@ -158,4 +153,53 @@ body {
 
 .clearfix {
     *zoom: 1;
+}
+
+/*
+Spinner, from: http://tobiasahlin.com/spinkit/
+*/
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin: 100px auto;
+}
+
+.double-bounce1, .double-bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #e44d26;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+    animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+    0%, 100% {
+        -webkit-transform: scale(0.0)
+    }
+    50% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bounce {
+    0%, 100% {
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+    }
+    50% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
 }

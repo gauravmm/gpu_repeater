@@ -28,7 +28,7 @@ def update(server):
 
     r = requests.get('http://{}:{}'.format(server, CLIENT_PORT))
     if r.status_code == 200:
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         GPU_RESPONSE[server] = (r.json(), now)
 
 def main():
