@@ -113,35 +113,6 @@ body {
    Helper classes
    ========================================================================== */
 
-.hidden {
-    display: none !important;
-    visibility: hidden;
-}
-
-.visuallyhidden {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
-}
-
-.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
-    clip: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    position: static;
-    width: auto;
-}
-
-.invisible {
-    visibility: hidden;
-}
-
 .clearfix:before, .clearfix:after {
     content: " ";
     display: table;
@@ -201,5 +172,119 @@ Spinner, from: http://tobiasahlin.com/spinkit/
     50% {
         transform: scale(1.0);
         -webkit-transform: scale(1.0);
+    }
+}
+
+/*
+ *  Display
+ */
+
+.server-data>header::after {
+    clear: both;
+}
+
+.server-data>header>h2 {
+    margin-bottom: 0;
+}
+
+.server-data>header>span {
+    float: right;
+    font-style: italic;
+}
+
+@media only screen and (min-width: 480px) {
+    .server-data>header>h2 {
+        margin: 0;
+    }
+}
+
+.gpu-list, .processes {
+    list-style-type: none;
+    padding-left: .5em;
+}
+
+@media only screen and (min-width: 768px) {
+    .gpu-list, .processes {
+        padding-left: 2em;
+    }
+}
+
+.gpu-list .proc-used, .gpu-list .mem-used {
+    float: right;
+}
+
+.gpu-list .proc-used::before, .gpu-list .mem-used::before {
+    font-weight: bold;
+    font-size: 76%;
+    padding: 0 0.25em 0 .5em;
+}
+
+.gpu-list .proc-used::before {
+    content: "CPU";
+}
+
+.gpu-list .mem-used::before {
+    content: "MEM";
+}
+
+.gpu-list h3 {
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+.gpu-list .mem-used-bar-outer {
+    width: 100%;
+    height: 11px;
+    border: thin solid #e44d26;
+    margin-bottom: 3px;
+}
+
+.gpu-list .mem-used-bar-inner {
+    height: 100%;
+    background: #f16529;
+}
+
+@media only screen and (min-width: 768px) {
+    .gpu-list .mem-used-bar-outer {
+        height: 15px;
+        margin-bottom: 7px;
+    }
+}
+
+.processes>li>span {
+    padding-left: .5em;
+    user-select: none;
+    -moz-user-select: none;
+}
+
+.processes .proc-user {
+    font-family: monospace;
+}
+
+.processes .proc-cmd .proc-cmd-toolip {
+    visibility: hidden;
+    display: block;
+    width: 90%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    left: 5%;
+    z-index: 1;
+}
+
+.processes .proc-cmd:hover .proc-cmd-toolip {
+    visibility: visible;
+}
+
+
+@media only screen and (min-width: 480px) {
+    .processes {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }

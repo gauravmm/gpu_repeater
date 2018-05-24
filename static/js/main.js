@@ -10,11 +10,13 @@ function timeSinceSeconds(seconds) {
     let hours = Math.floor(seconds / 3600);
     if (hours >= 1) {
         let hour_string = (hours == 1)?"an hour":(hours + " hours");
-        let residual = timeSinceSeconds(seconds % 3600);
-        if (residual == "just now") {
-            return hour_string + " ago";
+        let minutes = Math.round((seconds % 3600) / 60);
+        if (minutes > 1) {
+            return hour_string + " and " + minutes + " minutes ago";
+        } else if (minutes == 1) {
+            return hour_string + " and 1 minute ago";
         } else {
-            return hour_string + " " + residual;
+            return hour_string + " ago";
         }
     }
     if (seconds >= 90)
@@ -61,8 +63,9 @@ function filterGPUProcesses(proc) {
     elt.append($("<span class=\"proc-mem\"></span>").text(filterMiB(proc["gpu_mem"])));
     elt.append($("<span class=\"proc-user\"></span>").text(proc["username"]));
     elt.append($("<span class=\"proc-since\"></span>").text(timeSince(proc["create_time"] * 1000)));
-    elt.append($("<span class=\"proc-cmd\"></span>").text(filterCommandline(proc["cmdline"])));
-    console.log(proc);
+    elt.append($("<span class=\"proc-cmd\"></span>").text(proc["name"]).append(
+        $("<span class='proc-cmd-toolip'></span>").text(filterCommandline(proc["cmdline"]))
+    ));
     return elt;
 }
 
@@ -76,7 +79,7 @@ function render(data) {
         let gpus = data[key][0];
         let updated_time = Date.parse(data[key][1]);
 
-        let art = $("<article></article>");
+        let art = $("<article class='server-data'></article>");
 
         if (updated_time == null) {
             art.append($("<header></header>")
@@ -85,16 +88,16 @@ function render(data) {
 
         } else {
             art.append($("<header></header>")
-                .append($("<h2></h2>").text(filterServerName(key)))
-                .append($("<span></span>").text(timeSince(updated_time))))
+                .append($("<span></span>").text(timeSince(updated_time)))
+                .append($("<h2></h2>").text(filterServerName(key))))
 
-            let gpulist = $("<ul></ul>")
+            let gpulist = $("<ul class='gpu-list'></ul>")
             for (let gpu in gpus) {
                 let gpu_data = gpus[gpu] 
-                art.append($("<li></li>")
-                    .append($("<h3></h3>").text(filterGPUName(gpu)))
-                    .append($("<span class='proc-used'></span>").text(filterPercentage(gpu_data["gpu_util"]["gpu"])))
+                gpulist.append($("<li></li>")
                     .append($("<span class='mem-used'></span>").text(filterPercentage(gpu_data["gpu_mem"]["used"])))
+                    .append($("<span class='proc-used'></span>").text(filterPercentage(gpu_data["gpu_util"]["gpu"])))
+                    .append($("<h3></h3>").text(filterGPUName(gpu)))
                     .append($("<div class='mem-used-bar-outer'></div>")
                         .append($("<div class='mem-used-bar-inner'>&nbsp;</div>").css("width", gpu_data["gpu_mem"]["used"]*100 + "%")))
                     .append($("<ul class='processes'></ul>")
