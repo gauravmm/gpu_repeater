@@ -257,8 +257,16 @@ Spinner, from: http://tobiasahlin.com/spinkit/
     -moz-user-select: none;
 }
 
-.processes .proc-user {
+.processes .proc-user,
+.processes .proc-cmd {
     font-family: monospace;
+}
+
+.processes .proc-cmd {
+    color: #999;
+}
+.processes .proc-since {
+    font-style: italic;
 }
 
 .processes .proc-cmd .proc-cmd-toolip {
