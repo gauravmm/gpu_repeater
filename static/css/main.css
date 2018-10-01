@@ -86,19 +86,9 @@ body {
 }
 
 @media only screen and (min-width: 768px) {
-    .header-container, .main aside {
+    .header-container, #toggle-view {
         box-shadow: 0 3px 3px #aaa;
     }
-    /*
-    .main article {
-        float: left;
-        width: 57%;
-    }
-
-    .main aside {
-        float: right;
-        width: 28%;
-    }*/
 }
 
 @media only screen and (min-width: 1140px) {
@@ -190,6 +180,7 @@ Spinner, from: http://tobiasahlin.com/spinkit/
 .server-data>header>span {
     float: right;
     font-style: italic;
+    color: #999;
 }
 
 @media only screen and (min-width: 480px) {
@@ -295,4 +286,41 @@ Spinner, from: http://tobiasahlin.com/spinkit/
         overflow: hidden;
         text-overflow: ellipsis;
     }
+}
+
+.view-summary .processes {
+    display: none;
+}
+.view-summary .gpu-list {
+    margin-top: 0;
+}
+.view-summary .gpu-list > li {
+    display: flex;
+}
+.view-summary .gpu-list > li > h3 {
+    display: none;
+}
+.view-summary .gpu-list > li > .proc-used {
+    float: none;
+    flex: 5em 0 0;
+    order: 3;
+}
+.view-summary .gpu-list > li > .mem-used {
+    float: none;
+    flex: 5em 0 0;
+    order: 2;
+}
+.view-summary .gpu-list > li > .mem-used-bar-outer {
+    float: none;
+    flex: 400px 100%;
+    order: 1;
+}
+
+#toggle-view {
+    color: #fff;
+    cursor: pointer;
+    float: right;
+    background: #e44d26;
+    margin-right: 20px;
+    padding: 0 7px;
 }

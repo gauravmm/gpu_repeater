@@ -133,6 +133,8 @@ function getUpdate(){
     });
 }
 
+$("#toggle-view").click(() => $(document.body).toggleClass("view-summary"));
+
 function init(){
     getUpdate();
     setInterval(updateTimeSince, 1000);
