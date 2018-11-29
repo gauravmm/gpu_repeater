@@ -48,9 +48,10 @@ body {
 }
 
 .title {
+    font-size: 2rem;
     color: white;
     text-align: center;
-    margin-bottom: 10p
+    margin-bottom: -10px;
 }
 
 /* ==============
@@ -288,11 +289,23 @@ Spinner, from: http://tobiasahlin.com/spinkit/
     }
 }
 
+@media only screen and (min-width: 768px) {
+    .view-summary .main > div {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+    .view-summary .main > div > .server-data {
+        flex: 48% 0 0;
+    }
+}
+
 .view-summary .processes {
     display: none;
 }
 .view-summary .gpu-list {
     margin-top: 0;
+    padding: 0;
 }
 .view-summary .gpu-list > li {
     display: flex;
@@ -302,13 +315,19 @@ Spinner, from: http://tobiasahlin.com/spinkit/
 }
 .view-summary .gpu-list > li > .proc-used {
     float: none;
-    flex: 5em 0 0;
+    flex: 3em 0 0;
     order: 3;
+}
+.view-summary .gpu-list > li > .proc-used::before {
+    content: "";
 }
 .view-summary .gpu-list > li > .mem-used {
     float: none;
-    flex: 5em 0 0;
+    flex: 3em 0 0;
     order: 2;
+}
+.view-summary .gpu-list > li > .mem-used::before {
+    content: "";
 }
 .view-summary .gpu-list > li > .mem-used-bar-outer {
     float: none;
