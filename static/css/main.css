@@ -190,6 +190,12 @@ Spinner, from: http://tobiasahlin.com/spinkit/
     }
 }
 
+.server-error {
+    display: block;
+    color: #e44d26;
+    margin-bottom: 11px;
+}
+
 .gpu-list, .processes {
     list-style-type: none;
     padding-left: .5em;

@@ -20,19 +20,32 @@ GPU_RESPONSE = {k: (None, None) for k in SERVERS}
 
 app = Flask(__name__)
 @app.route("/")
-def update():
+def response():
     return jsonify(GPU_RESPONSE)
 
 def update(server):
     global GPU_RESPONSE
 
-    r = requests.get('http://{}:{}'.format(server, CLIENT_PORT))
-    if r.status_code == 200:
-        now = datetime.datetime.utcnow()
-        GPU_RESPONSE[server] = (r.json(), now)
+    try:
+        r = requests.get('http://{}:{}'.format(server, CLIENT_PORT), timeout=0.1)
+
+        if r.status_code == 200:
+            now = datetime.datetime.utcnow()
+            GPU_RESPONSE[server] = (r.json(), now)
+
+    except Exception as e:
+        now = None
+        if server in GPU_RESPONSE:
+            _, now = GPU_RESPONSE[server]
+        GPU_RESPONSE[server] = (str(e), now)
+        return
 
 def main():
     assert SERVERS
+    # Bootstrap:
+    for s in SERVERS:
+        update(s)
+
     NEXT_SERVER = itertools.cycle(SERVERS)
 
     scheduler = BackgroundScheduler()

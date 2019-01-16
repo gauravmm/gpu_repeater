@@ -2,6 +2,8 @@
 
 // From: https://stackoverflow.com/a/3177838
 function timeSince(date) {
+    if (date === null)
+        return "never";
     let seconds = Math.floor((new Date() - date) / 1000);
     return timeSinceSeconds(seconds);
 }
@@ -86,36 +88,38 @@ function render(data) {
     var fragment = $("<div></div>");
     for (let key in data) {
         let gpus = data[key][0];
-        let updated_time = Date.parse(data[key][1]);
+        let updated_time = null;
+        if (data[key][1])
+            updated_time = Date.parse(data[key][1]);
 
         let art = $("<article class='server-data'></article>");
 
-        if (updated_time == null) {
-            art.append($("<header></header>")
-                .append($("<h2></h2>").text(filterServerName(key)))
-                .append($("<span></span>").text("never updated")))
+        art.append($("<header></header>")
+            .append($("<span></span>").text(timeSince(updated_time)))
+            .append($("<h2></h2>").text(filterServerName(key))))
+
+        let gpulist = ""
+        if (typeof gpus == "string") {
+            gpulist = $("<span class='server-error'></span>").text(gpus);
 
         } else {
-            art.append($("<header></header>")
-                .append($("<span></span>").text(timeSince(updated_time)))
-                .append($("<h2></h2>").text(filterServerName(key))))
+            gpulist = $("<ul class='gpu-list'></ul>")
 
-            let gpulist = $("<ul class='gpu-list'></ul>")
             for (let gpu in gpus) {
                 let gpu_data = gpus[gpu] 
                 gpulist.append($("<li></li>")
-                    .append($("<span class='mem-used'></span>").text(filterPercentage(gpu_data["gpu_mem"]["used"])))
-                    .append($("<span class='proc-used'></span>").text(filterPercentage(gpu_data["gpu_util"]["gpu"])))
-                    .append($("<h3></h3>").text(filterGPUName(gpu)))
-                    .append($("<div class='mem-used-bar-outer'></div>")
-                        .append($("<div class='mem-used-bar-inner'>&nbsp;</div>").css("width", gpu_data["gpu_mem"]["used"]*100 + "%")))
-                    .append($("<ul class='processes'></ul>")
-                        .append(gpu_data['gpu_procs'].map(filterGPUProcesses)))
+                .append($("<span class='mem-used'></span>").text(filterPercentage(gpu_data["gpu_mem"]["used"])))
+                .append($("<span class='proc-used'></span>").text(filterPercentage(gpu_data["gpu_util"]["gpu"])))
+                .append($("<h3></h3>").text(filterGPUName(gpu)))
+                .append($("<div class='mem-used-bar-outer'></div>")
+                .append($("<div class='mem-used-bar-inner'>&nbsp;</div>").css("width", gpu_data["gpu_mem"]["used"]*100 + "%")))
+                .append($("<ul class='processes'></ul>")
+                .append(gpu_data['gpu_procs'].map(filterGPUProcesses)))
                 )
             }
-
-            art.append(gpulist);
         }
+
+        art.append(gpulist);
 
         fragment.append(art);
     }
