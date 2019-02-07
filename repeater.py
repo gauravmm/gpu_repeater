@@ -1,7 +1,10 @@
 import atexit
-import itertools
-import os
 import datetime
+import itertools
+import json as pyjson
+import os
+from pathlib import Path
+
 import requests
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -23,21 +26,33 @@ app = Flask(__name__)
 def response():
     return jsonify(GPU_RESPONSE)
 
+BASE_PATH = Path("/home/serverbot/gpu_history/")
 def update(server):
     global GPU_RESPONSE
+
+    servertime = datetime.datetime.utcnow()
+    path = BASE_PATH / "{}-{:02}".format(servertime.year, servertime.month) / "{:02}".format(servertime.day) / "{:02}-{:02}-{}.json".format(servertime.hour, (servertime.minute//5)*5, server)
+    path.parent.mkdir(exist_ok=True, parents=True)
 
     try:
         r = requests.get('http://{}:{}'.format(server, CLIENT_PORT), timeout=0.1)
 
         if r.status_code == 200:
-            now = datetime.datetime.utcnow()
-            GPU_RESPONSE[server] = (r.json(), now)
+            resp = r.json()
+            GPU_RESPONSE[server] = (resp, servertime)
+
+            path.parent.mkdir(exist_ok=True, parents=True)
+            with path.open('w') as handle:
+                pyjson.dump({"error":None, "state":resp}, handle)
 
     except Exception as e:
         now = None
         if server in GPU_RESPONSE:
             _, now = GPU_RESPONSE[server]
         GPU_RESPONSE[server] = (str(e), now)
+        with path.open('w') as handle:
+            pyjson.dump({"error":str(e), "state":None}, handle)
+
         return
 
 def main():
