@@ -2,6 +2,7 @@ import atexit
 import datetime
 import itertools
 import json as pyjson
+import logging
 import os
 from pathlib import Path
 
@@ -10,6 +11,8 @@ import requests
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from flask import Flask, jsonify
+
+logger = logging.getLogger("repeater")
 
 CLIENT_PORT = 9212
 SERVER_PORT = 8271
@@ -43,8 +46,7 @@ def history_path(ts, server):
 
 # machines: List[Machine, List[GPU]]
 # values: Tuple[Time, Dict[GPU, List[Tuple[User, MemoryFraction, CMD]]]]
-@app.route("/history")
-def history():
+def update_history():
     global GPU_HISTORY, GPU_ID
 
     servertime = datetime.datetime.utcnow()
@@ -59,7 +61,11 @@ def history():
             path = history_path(ts, server)
             try:
                 data = pyjson.loads(path.read_text())
-            except OSError:
+            except FileNotFoundError as e:
+                logger.warn("Cannot find {}".format(e.filename))
+                continue
+            except OSError as e:
+                logger.exception(e)
                 continue # Skip if file does not exist.
 
             if data["error"]:
@@ -81,7 +87,13 @@ def history():
         ts += datetime.timedelta(minutes=5)
 
     GPU_HISTORY = sorted((ts, row) for ts, row in GPU_HISTORY if ts >= earliest_ts)
-    return jsonify({"users": USERS, "gpus" : {k: list(v) for k, v in GPU_ID.items()}, "history" : GPU_HISTORY})
+    return GPU_HISTORY, GPU_ID
+
+
+@app.route("/history")
+def history():
+    gpu_hist, gpu_ids = update_history()
+    return jsonify({"users": USERS, "gpus" : {k: list(v) for k, v in gpu_ids.items()}, "history" : gpu_hist})
 
 
 BASE_PATH = Path("/home/serverbot/gpu_history/")
@@ -117,6 +129,7 @@ def main():
     # Bootstrap:
     for s in SERVERS:
         update(s)
+    update_history()
 
     NEXT_SERVER = itertools.cycle(SERVERS)
 
