@@ -17,6 +17,7 @@ UPDATE_PERIOD = 60
 
 # Get the list of other servers from the environment variable:
 SERVERS = [s for s in os.environ.get("SLACK_BOT_OTHER_SERVERS").split(",") if s]
+USERS = [s.split(":")[0] for s in os.environ.get("SLACK_BOT_USERS_LOOKUP").split(",") if s]
 
 global GPU_RESPONSE
 GPU_RESPONSE = {k: (None, None) for k in SERVERS}
@@ -26,12 +27,70 @@ app = Flask(__name__)
 def response():
     return jsonify(GPU_RESPONSE)
 
+
+#
+# History
+#
+global GPU_HISTORY, GPU_ID
+GPU_HISTORY = []
+GPU_ID = {s: set() for s in SERVERS}
+
+def round_time(ts):
+    return datetime.datetime(ts.year, ts.month, ts.day, ts.hour, (ts.minute // 5) * 5)
+
+def history_path(ts, server):
+    ts = round_time(ts)
+    return BASE_PATH / "{}-{:02}".format(ts.year, ts.month) / "{:02}".format(ts.day) / "{:02}-{:02}-{}.json".format(ts.hour, ts.minute, server)
+
+# machines: List[Machine, List[GPU]]
+# values: Tuple[Time, Dict[GPU, List[Tuple[User, MemoryFraction, CMD]]]]
+@app.route("/history")
+def history():
+    global GPU_HISTORY, GPU_ID
+
+    servertime = datetime.datetime.utcnow()
+    ts = earliest_ts = round_time(servertime - datetime.timedelta(days=1))
+    if len(GPU_HISTORY):
+        ts = max(earliest_ts, GPU_HISTORY[-1][0] + datetime.timedelta(minutes=5))
+
+    while ts < servertime:
+        # Assmble the row corresponding to ts:
+        row = {}
+        for server in SERVERS:
+            path = history_path(ts, server)
+            try:
+                data = pyjson.loads(path.read_text())
+            except OSError:
+                continue # Skip if file does not exist.
+
+            if data["error"]:
+                continue
+
+            for gpu, state in data["state"].items():
+                GPU_ID[server].add(gpu)
+                # Size of total memory, in bytes.
+                total_mem_used_frac = state["gpu_mem"]["used"]
+                total_mem_bytes = sum(s["gpu_mem"] for s in state["gpu_procs"])
+
+                # Hack for divide-by-zeros:
+                if total_mem_bytes <= 0:
+                    total_mem_bytes = 1
+
+                row[gpu] = sorted((s["username"], s["gpu_mem"]/total_mem_bytes * total_mem_used_frac, " ".join(s["cmdline"]).strip()) for s in state["gpu_procs"])
+
+        GPU_HISTORY.append((ts, row))
+        ts += datetime.timedelta(minutes=5)
+
+    GPU_HISTORY = sorted((ts, row) for ts, row in GPU_HISTORY if ts >= earliest_ts)
+    return jsonify({"users": USERS, "gpus" : {k: list(v) for k, v in GPU_ID.items()}, "history" : GPU_HISTORY})
+
+
 BASE_PATH = Path("/home/serverbot/gpu_history/")
 def update(server):
     global GPU_RESPONSE
 
     servertime = datetime.datetime.utcnow()
-    path = BASE_PATH / "{}-{:02}".format(servertime.year, servertime.month) / "{:02}".format(servertime.day) / "{:02}-{:02}-{}.json".format(servertime.hour, (servertime.minute//5)*5, server)
+    path = history_path(servertime, server)
     path.parent.mkdir(exist_ok=True, parents=True)
 
     try:
@@ -41,7 +100,6 @@ def update(server):
             resp = r.json()
             GPU_RESPONSE[server] = (resp, servertime)
 
-            path.parent.mkdir(exist_ok=True, parents=True)
             with path.open('w') as handle:
                 pyjson.dump({"error":None, "state":resp}, handle)
 
