@@ -196,7 +196,11 @@ body.suppress-job .job.same-process {
 }
 
 #detail {
-    text-align: right;
+    line-height: 1.1rem;
+}
+#detail-user {
+    display: block;
+    float: right;
 }
 #detail div {
     overflow: hidden;

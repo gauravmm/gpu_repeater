@@ -43,6 +43,7 @@ function renderDate(dt) {
     return "";
 }
 
+var job_selected = false;
 var zip= rows=>rows[0].map((_,c)=>rows.map(row=>row[c]));
 function render(data) {
     updated();
@@ -129,6 +130,10 @@ function render(data) {
 
     $('#main').empty().append(fragment.append(tbody));
 
+    function updateJobUser(obj) {
+        $("#detail-user").empty().append(`<span class='d-user'>${obj.data('uname')}</span>@<span class='d-machine'>${filterServerName(obj.data('machine'))}</span>`);
+    }
+
     $(".job").click(function(evt) {
         let obj = $(this);
         $(document.body).addClass("suppress-job");
@@ -137,16 +142,19 @@ function render(data) {
         $(`.job[data-uname='${obj.data('uname')}']`).addClass("same-user");
         $(`.job[data-uuid='${obj.data('uuid')}']`).addClass("same-process");
 
+        updateJobUser(obj);
         $("#detail").empty().append([
-            `<div><span class='d-user'>${obj.data('uname')}</span>@<span class='d-machine'>${filterServerName(obj.data('machine'))}</span></div>`,
             `<div><span class='d-cmd'>${obj.data('cmdstr')}</span></div>`,
             `<div>Since <span class='d-since'>${obj.data('since')}</span></div>`]);
 
+        job_selected = true;
         return false;
     });
 
     $(".job").mouseover(function (e) {
         $("#proc-use").text(`${Math.round($(this).data('frac') * 1000)/10}%`);
+        if (!job_selected)
+            updateJobUser($(this));
     });
 
     $("#main table td").click(function(evt) {
@@ -155,6 +163,7 @@ function render(data) {
         $(".same-user").removeClass("same-user");
         $(".same-process").removeClass("same-process");
         $("#detail").empty();
+        job_selected = false;
     });
 }
 
