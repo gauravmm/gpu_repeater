@@ -1,0 +1,223 @@
+/*! HTML5 Boilerplate v5.0 | MIT License | http://h5bp.com/ */
+
+/* Based on Initializr Styles by Jonathan Vecchia - verekia.com/initializr/responsive-template */
+
+html {
+    color: #222;
+    font-size: 1em;
+    line-height: 1.4;
+}
+
+::selection {
+    background: #b3d4fc;
+    text-shadow: none;
+}
+
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 1px solid #ccc;
+    margin: 1em 0;
+    padding: 0;
+}
+
+body {
+    font: 16px/26px Helvetica, Helvetica Neue, Arial;
+    padding: 0 0 60px;
+}
+
+.wrapper {
+    width: 90%;
+    margin: 0 5%;
+}
+
+/* ===================
+    ALL: Orange Theme
+   =================== */
+
+.footer-container {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.footer-container {
+    background: #f16529;
+}
+
+.title {
+    font-size: 2rem;
+    color: white;
+    text-align: center;
+    margin-bottom: -10px;
+}
+
+/* ==============
+    MOBILE: Main
+   ============== */
+
+.main {
+    padding: 0;
+}
+
+.footer-container footer {
+    color: white;
+    padding: 10px 0;
+}
+
+
+/*
+Helper classes
+*/
+
+.clearfix:before, .clearfix:after {
+    content: " ";
+    display: table;
+}
+
+.clearfix:after {
+    clear: both;
+}
+
+.clearfix {
+    *zoom: 1;
+}
+
+/*
+Spinner, from: http://tobiasahlin.com/spinkit/
+*/
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    margin: 100px auto;
+}
+
+.double-bounce1, .double-bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: #e44d26;
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    -webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+    animation: sk-bounce 2.0s infinite ease-in-out;
+}
+
+.double-bounce2 {
+    -webkit-animation-delay: -1.0s;
+    animation-delay: -1.0s;
+}
+
+@-webkit-keyframes sk-bounce {
+    0%, 100% {
+        -webkit-transform: scale(0.0)
+    }
+    50% {
+        -webkit-transform: scale(1.0)
+    }
+}
+
+@keyframes sk-bounce {
+    0%, 100% {
+        transform: scale(0.0);
+        -webkit-transform: scale(0.0);
+    }
+    50% {
+        transform: scale(1.0);
+        -webkit-transform: scale(1.0);
+    }
+}
+
+.no-gpu {
+    background: #CCC;
+}
+.no-data {
+    background: #F0F0F0;
+}
+
+#main table tr {
+    height: 1rem;
+    line-height: 1rem;
+}
+
+#main table th {
+    font-size: small;
+    text-align: center;
+    font-weight: normal;
+    font-variant: small-caps;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#main table tr>th:first-child {
+    border-right: thin solid #942a10;
+}
+
+#main table thead {
+    background: #ff976b;
+}
+#main table thead tr:last-child th {
+    border-bottom: 3px solid #942a10;
+}
+#main table {
+    width: 100%;
+    table-layout: fixed;
+}
+#main table thead th.alternate-head {
+    background: #e44d26;
+}
+
+#main table td {
+    position: relative;
+}
+.job {
+    display: inline-block;
+    height: 100%;
+    cursor: pointer;
+}
+.job:empty:before {content: '\a0';}
+
+body.suppress-job .job {
+    opacity: 0.33;
+    filter: grayscale(100%);
+}
+body.suppress-job .job.same-user {
+    opacity: 1.0;
+    filter: grayscale(0%);
+}
+body.suppress-job .job.same-process {
+    filter: saturate(150%);
+}
+
+#detail {
+    text-align: right;
+}
+#detail div {
+    overflow: hidden;
+}
+#detail .d-cmd {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: monospace;
+}
+.d-user {
+    font-family: monospace;
+    font-weight: bold;
+}
+.d-machine {
+    font-variant: small-caps;
+}
+#proc-use {
+    font-weight: bold;
+}
+#proc-use-wrapper {
+    text-align: left;
+    background: #942a10;
+    color: white;
+}

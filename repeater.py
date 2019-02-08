@@ -27,7 +27,6 @@ app = Flask(__name__)
 def response():
     return jsonify(GPU_RESPONSE)
 
-
 #
 # History
 #
@@ -76,7 +75,7 @@ def history():
                 if total_mem_bytes <= 0:
                     total_mem_bytes = 1
 
-                row[gpu] = sorted((s["username"], s["gpu_mem"]/total_mem_bytes * total_mem_used_frac, " ".join(s["cmdline"]).strip()) for s in state["gpu_procs"])
+                row[gpu] = sorted((s["username"], s["pid"], s["create_time"], s["gpu_mem"]/total_mem_bytes * total_mem_used_frac, " ".join(s["cmdline"]).strip()) for s in state["gpu_procs"])
 
         GPU_HISTORY.append((ts, row))
         ts += datetime.timedelta(minutes=5)
