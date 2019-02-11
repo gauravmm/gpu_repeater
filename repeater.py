@@ -52,7 +52,7 @@ def update_history():
     servertime = datetime.datetime.utcnow()
     ts = earliest_ts = round_time(servertime - datetime.timedelta(days=1))
     if len(GPU_HISTORY):
-        ts = max(earliest_ts, GPU_HISTORY[-1][0] + datetime.timedelta(minutes=5))
+        ts = max(earliest_ts, GPU_HISTORY[-2][0] + datetime.timedelta(minutes=5))
 
     while ts < servertime:
         # Assmble the row corresponding to ts:
@@ -86,8 +86,9 @@ def update_history():
         GPU_HISTORY.append((ts, row))
         ts += datetime.timedelta(minutes=5)
 
-    GPU_HISTORY = sorted((ts, row) for ts, row in GPU_HISTORY if ts >= earliest_ts)
-    return GPU_HISTORY, GPU_ID
+    rv_hist = sorted((ts, row) for ts, row in GPU_HISTORY if ts >= earliest_ts)
+    GPU_HISTORY = rv_hist[:-1]
+    return rv_hist, GPU_ID
 
 
 @app.route("/history")
