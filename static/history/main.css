@@ -140,9 +140,13 @@ Spinner, from: http://tobiasahlin.com/spinkit/
     background: #F0F0F0;
 }
 
-#main table tr {
+#main table thead tr {
     height: 1rem;
     line-height: 1rem;
+}
+#main table tbody tr {
+    height: 0.2rem;
+    line-height: 0.2rem;
 }
 
 #main table th {
@@ -156,6 +160,7 @@ Spinner, from: http://tobiasahlin.com/spinkit/
 
 #main table tr>th:first-child {
     border-right: thin solid #942a10;
+    overflow: visible;
 }
 
 #main table thead {

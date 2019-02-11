@@ -36,7 +36,7 @@ function renderDate(dt) {
         _prev_date = date;
         return date;
     } else {
-        if (dt.getMinutes() % 30 == 0)
+        if (dt.getMinutes() % 30 == 0 && (dt.getMinutes() || dt.getHours()))
             return time;
     }
 
