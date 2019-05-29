@@ -105,25 +105,24 @@ def update(server):
     path = history_path(servertime, server)
     path.parent.mkdir(exist_ok=True, parents=True)
 
-    try:
-        r = requests.get('http://{}:{}'.format(server, CLIENT_PORT), timeout=0.1)
+    for i in range(3):
+        try:
+            r = requests.get('http://{}:{}'.format(server, CLIENT_PORT), timeout=0.1)
 
-        if r.status_code == 200:
-            resp = r.json()
-            GPU_RESPONSE[server] = (resp, servertime)
+            if r.status_code == 200:
+                resp = r.json()
+                GPU_RESPONSE[server] = (resp, servertime)
+                with path.open('w') as handle:
+                    pyjson.dump({"error":None, "state":resp}, handle)
+                break
 
+        except Exception as e:
+            now = None
+            if server in GPU_RESPONSE:
+                _, now = GPU_RESPONSE[server]
+            GPU_RESPONSE[server] = (str(e), now)
             with path.open('w') as handle:
-                pyjson.dump({"error":None, "state":resp}, handle)
-
-    except Exception as e:
-        now = None
-        if server in GPU_RESPONSE:
-            _, now = GPU_RESPONSE[server]
-        GPU_RESPONSE[server] = (str(e), now)
-        with path.open('w') as handle:
-            pyjson.dump({"error":str(e), "state":None}, handle)
-
-        return
+                pyjson.dump({"error":str(e), "state":None}, handle)
 
 def main():
     assert SERVERS
