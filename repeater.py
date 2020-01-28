@@ -61,6 +61,9 @@ def update_history():
             path = history_path(ts, server)
             try:
                 data = pyjson.loads(path.read_text())
+            except pyjson.decoder.JSONDecodeError as e:
+                logger.warn(f"Empty/buggy JSON in {path}")
+                continue
             except FileNotFoundError as e:
                 logger.warn("Cannot find {}".format(e.filename))
                 continue
