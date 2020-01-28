@@ -86,7 +86,7 @@ var TIMEOUT = 60 * 1000;
 
 function getUpdate(){
     $.ajax({
-        url: "https://loci.cs.cmu.edu/gpu/update/",
+        url: "/gpu/update/",
         method: "GET",
         data: {}
     })
