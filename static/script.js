@@ -36,12 +36,14 @@ function render(data) {
     $("body").removeClass("ajax-error");
     updated();
 
+    data = Array.from(Object.entries(data)).sort((a, b) => (Object.keys(a[1][0]).length > Object.keys(b[1][0]).length) || (a[0] > b[0]));
+
     var fragment = $("<div></div>");
-    for (let key in data) {
-        let gpus = data[key][0];
+    for (const [key, gpustime] of data) {
+        const [gpus, timeupd] = gpustime;
         let updated_time = null;
-        if (data[key][1])
-            updated_time = Date.parse(data[key][1]);
+        if (timeupd)
+            updated_time = Date.parse(timeupd);
 
         let art = $("<article class='server-data'></article>");
 
